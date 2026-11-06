@@ -1,0 +1,1314 @@
+# MASTER DEVELOPMENT PROMPT
+# DUKAAN HISAB PRO
+## Complete Offline-First Retail Management, Billing, Udhaar & Accounting Android App
+
+**Role:** Act as a senior Android architect, Kotlin developer, Jetpack Compose UI/UX designer, database engineer, accounting logic specialist, QA engineer, application security reviewer, and Google Play Store release engineer.
+
+**Project name:** Dukaan Hisab Pro  
+**Target users:** Indian shopkeepers, small retailers, wholesalers, general stores, clothing shops, hardware shops, electrical shops, grocery shops, mobile accessory shops, and independent traders.  
+**Primary language:** Hindi  
+**Secondary language:** English  
+**Currency:** Indian Rupee (INR, ₹)  
+**Development environment:** Google AI Studio, subject to its actual supported build and export capabilities.  
+**Backend:** Local Room database for the initial release. Firebase is optional for a separately implemented future cloud-sync module, not required for core functionality.  
+**Architecture:** Native Android, Kotlin, Jetpack Compose, Material 3, MVVM, Repository pattern, Room, Coroutines and Flow.  
+**Business model:** Free offline-first application with an architecture that can support optional premium features later.  
+**Primary objective:** Build a reliable, maintainable, production-oriented retail management app—not a static prototype, nonfunctional UI demo, or web page disguised as a native application.
+
+---
+
+# 1. CORE DEVELOPMENT RULES
+
+Follow these rules throughout development.
+
+1. Inspect the current development environment before choosing the project structure.
+2. Confirm whether the available environment can build, run, test, and export a native Android project.
+3. If native Android development is unsupported, explain the limitation and recommend a compatible workflow. Never falsely describe a web application as a native Android app.
+4. Inspect existing project files before changing them.
+5. Preserve working code and existing user data when modifying the application.
+6. Build incrementally in small, verifiable phases.
+7. Use a single source of truth for financial balances and inventory quantities.
+8. Store essential business data locally so the app remains usable without internet.
+9. Never generate fake financial records, fake payment confirmations, or fake test results in production mode.
+10. Never create buttons that appear functional but do nothing.
+11. Do not leave important screens populated with hardcoded sample values.
+12. Validate all financial calculations with automated tests.
+13. Do not mark a feature as completed until its implementation has been verified.
+14. Do not introduce paid APIs or AI dependencies into essential offline operations.
+15. Do not implement cloud synchronization, payment processing, or tax compliance as a visual simulation.
+16. Maintain a clear list of completed, incomplete, and unverified features.
+17. Use consistent coding conventions, meaningful names, reusable components, and documented business rules.
+18. When adding a feature, update the database, repositories, UI, navigation, validation, and tests as required.
+
+**Start by creating a working foundation, not by attempting to generate every feature simultaneously.**
+
+# 2. APP IDENTITY AND BRAND DESIGN
+
+Use the following identity consistently throughout the app.
+
+**App name:** Dukaan Hisab Pro
+
+**Brand concept:** A trustworthy digital shopkeeper's ledger that makes daily business accounting easier.
+
+**Logo direction:** Use the supplied Dukaan Hisab logo as the brand reference. The design features a shopfront, an accounting ledger, a ₹ symbol, and coins. Do not recreate or distort the logo unnecessarily. If the image asset is available, use it appropriately.
+
+**Brand colors:**
+- Deep navy blue for primary navigation, headings, and trust.
+- Green for received payments, positive balances, and successful operations.
+- Red or orange for overdue amounts, warnings, and destructive actions.
+- White or warm off-white for backgrounds.
+- Neutral gray for secondary information.
+- Maintain accessible contrast in both light and dark themes.
+
+**UI style:**
+- Modern Indian business application.
+- Clean Material 3 interface.
+- Rounded cards with restrained elevation.
+- Large, readable financial amounts.
+- Clear Hindi labels.
+- Touch-friendly buttons and form controls.
+- Minimal visual clutter.
+- Consistent spacing, typography, and iconography.
+- Responsive layouts for small and large Android screens.
+- Subtle animations only where useful.
+- Avoid excessive gradients, decorative elements, and unnecessary dashboards.
+
+Use a reusable design system with shared colors, typography, spacing, buttons, form fields, cards, dialogs, charts, and empty states.
+
+Do not place the full logo and tagline on every screen. Use the full branding where appropriate, such as onboarding and About, and use a simplified app icon for compact locations.
+
+# 3. TECHNOLOGY STACK AND PROJECT ARCHITECTURE
+
+Use the following technologies when supported by the selected Android toolchain:
+
+- Kotlin.
+- Native Android SDK.
+- Jetpack Compose.
+- Material 3.
+- Navigation Compose.
+- MVVM architecture.
+- Repository pattern.
+- Room database.
+- DataStore for persistent preferences.
+- Kotlin Coroutines and Flow.
+- Android document picker.
+- Android share intents.
+- Android printing framework where supported.
+- PDF generation using an appropriate Android-compatible implementation.
+- CSV import and export.
+- JUnit and suitable Android UI/database testing tools.
+
+Use stable, mutually compatible dependency versions. Do not blindly upgrade libraries or use deprecated APIs without justification.
+
+Organize the project into logical packages, such as:
+
+- `core`
+- `data`
+- `database`
+- `domain`
+- `models`
+- `repositories`
+- `navigation`
+- `ui`
+- `features/onboarding`
+- `features/dashboard`
+- `features/customers`
+- `features/customerledger`
+- `features/suppliers`
+- `features/supplierledger`
+- `features/sales`
+- `features/invoices`
+- `features/purchases`
+- `features/inventory`
+- `features/expenses`
+- `features/cashbook`
+- `features/reports`
+- `features/backup`
+- `features/settings`
+
+Keep UI code separate from accounting calculations and persistence logic.
+
+Use dependency injection where it improves maintainability, but do not introduce unnecessary complexity.
+
+All database queries and potentially expensive operations must run off the main thread.
+
+# 4. OFFLINE-FIRST REQUIREMENTS
+
+The initial version must work without internet for all essential features.
+
+Offline features must include:
+
+- Business profile management.
+- Customer and supplier records.
+- Customer and supplier ledgers.
+- Sales and invoice creation.
+- Payment entries.
+- Purchases.
+- Product catalogue.
+- Inventory movements.
+- Expense tracking.
+- Cashbook.
+- Reports based on locally available records.
+- PDF and CSV exports.
+- Local backup and restore.
+- App settings.
+- Optional local PIN or biometric lock.
+
+Do not display a permanent internet-required screen.
+
+Do not make login or Firebase configuration mandatory for local-only use.
+
+If Firebase is added in a future release, isolate it behind a separate data and synchronization layer. The absence of Firebase must not break the core app.
+
+# 5. FIRST-LAUNCH ONBOARDING
+
+Create a professional onboarding flow.
+
+Collect:
+
+- Business name.
+- Business type.
+- Owner or operator display name, optional.
+- Preferred language.
+- Financial year preference.
+- Opening cash balance, optional.
+- Default invoice prefix.
+- Default measurement units.
+- Default payment methods.
+
+Allow users to skip optional fields and edit them later.
+
+Suggested business categories:
+
+- Grocery and general store.
+- Clothing and textile.
+- Electrical shop.
+- Hardware store.
+- Electronics.
+- Mobile accessories.
+- Cosmetics.
+- Stationery.
+- Wholesale.
+- Other.
+
+For regulated business categories, do not imply that the app automatically satisfies industry-specific regulatory requirements.
+
+Provide an optional demo mode with clearly labeled sample data. Demo records must be isolated from real business records and must never appear as real transactions.
+
+Do not request unnecessary personal information.
+
+# 6. LANGUAGE, CURRENCY AND FORMATTING
+
+Provide Hindi and English interfaces.
+
+Requirements:
+
+- Use Android string resources for translatable UI text.
+- Ensure Hindi characters render correctly.
+- Allow language selection in settings.
+- Persist language preferences.
+- Format money using INR conventions.
+- Display currency consistently, for example ₹1,250.00 where appropriate.
+- Support appropriate Indian number formatting.
+- Use a consistent date and time format.
+- Support configurable financial year settings.
+- Support fractional product quantities where relevant.
+- Never silently round money or quantities.
+
+Store monetary amounts using integer paise where practical, or a suitable decimal representation with explicit rounding rules. Do not use binary floating-point arithmetic for financial calculations.
+
+# 7. MAIN NAVIGATION
+
+Provide a simple navigation system suitable for shopkeepers.
+
+Recommended bottom navigation:
+
+1. Home
+2. Hisab
+3. Sales
+4. Stock
+5. More
+
+The exact labels can be adapted to fit the Hindi interface.
+
+Under the More section, provide:
+
+- Customers.
+- Suppliers.
+- Purchases.
+- Expenses.
+- Cashbook.
+- Reports.
+- Reminders.
+- Backup and export.
+- Settings.
+- Help and feedback.
+
+All navigation destinations must open functional screens.
+
+Use a global search entry point where practical.
+
+Prevent duplicate navigation actions from creating duplicate transactions.
+
+Handle Android back navigation correctly, including unsaved form changes.
+
+# 8. DASHBOARD
+
+Build a data-driven dashboard that uses saved database records.
+
+Display the following information:
+
+**Daily business summary**
+- Today's sales.
+- Amount received today.
+- Outstanding amount from today's sales.
+- Cash sales.
+- Recorded digital payment entries.
+- Sales returns.
+- Today's expenses.
+
+**Business overview**
+- Monthly sales.
+- Monthly expenses.
+- Customer receivables.
+- Supplier payables.
+- Overdue customer balances.
+- Pending supplier payments.
+- Low-stock product count.
+- Unpaid invoice count.
+- Recorded cashbook balance.
+
+**Quick actions**
+- New Sale.
+- Add Customer.
+- Receive Payment.
+- Add Expense.
+- Add Product.
+- New Purchase.
+- View Reports.
+
+**Activity**
+- Recent sales.
+- Recent payments.
+- Recent expenses.
+- Recent stock movements.
+- Pending reminders.
+
+Provide date filters for today, yesterday, this week, this month, and a custom period.
+
+Important calculation rules:
+
+- Sales are not the same as cash received.
+- An unpaid invoice must not increase cash balance.
+- Customer collections must not be counted as new sales revenue.
+- Supplier payments must not be counted as operating expenses when they merely settle an already recorded purchase liability.
+- Revenue is not profit.
+- Estimated profit must be clearly labeled when cost data is incomplete.
+- Do not display invented figures when no records exist.
+
+New users should see helpful empty states and clear instructions to create their first customer, product, or sale.
+
+# 9. CUSTOMER MANAGEMENT
+
+Create a complete customer directory.
+
+Customer fields:
+
+- Unique customer ID.
+- Customer name.
+- Phone number, optional.
+- Address, optional.
+- Notes, optional.
+- Opening balance.
+- Customer category, optional.
+- Created date.
+- Active or archived status.
+
+Features:
+
+- Add, edit, view, search, sort, and archive customers.
+- Filter by outstanding balance.
+- Filter by overdue status.
+- View total sales.
+- View payments received.
+- View returns and adjustments.
+- View current balance.
+- View transaction history.
+- View last transaction date.
+- View customer statements.
+- Export statements to PDF or CSV.
+- Warn about possible duplicate records without automatically merging them.
+
+Allow manual phone-number entry. Do not require access to the user's contact list.
+
+Do not automatically send messages to customers.
+
+# 10. CUSTOMER LEDGER — UDHAR HISAB
+
+This is one of the most important modules.
+
+Create a reliable customer ledger with a clearly documented debit and credit convention.
+
+Support:
+
+- Opening balance.
+- Credit sale.
+- Debit adjustment.
+- Payment received.
+- Sales return.
+- Credit note or adjustment, where supported.
+- Reversal of an incorrect entry.
+- Optional due date and reference.
+- Partial payment.
+- Full payment.
+
+Every entry must have a unique ID, customer ID, transaction type, amount, date and time, notes where appropriate, and a reference to the associated invoice or payment.
+
+Display:
+
+- Previous balance.
+- Debit.
+- Credit.
+- Running balance.
+- Total amount due.
+- Total payments received.
+- Transaction history.
+
+Example:
+
+A customer owes ₹1,000 and pays ₹300.
+
+The amount due must become ₹700.
+
+The app must record the ₹300 payment and update the calculated balance through the same transaction workflow.
+
+Additional requirements:
+
+- Do not silently reduce balances.
+- Prevent duplicate payment entries.
+- Do not allow invalid amounts.
+- Preserve financial history.
+- Use correction or reversal transactions instead of silently deleting posted entries.
+- Require a reason for material corrections.
+- Update the ledger and payment records atomically.
+- Recalculate balances consistently after reversals.
+- Support customer statements over selected dates.
+
+Write automated tests for opening balances, sales, partial payments, full payments, returns, adjustments, and reversals.
+
+# 11. SUPPLIER MANAGEMENT AND LEDGER
+
+Build supplier management similar to customer management, but keep supplier accounting separate.
+
+Supplier fields:
+
+- Supplier ID.
+- Name.
+- Phone number, optional.
+- Address, optional.
+- Opening balance.
+- Notes.
+- Active or archived status.
+
+Features:
+
+- Supplier directory.
+- Supplier profile.
+- Supplier ledger.
+- Purchases by supplier.
+- Payments made.
+- Purchase returns.
+- Outstanding payables.
+- Due-date tracking.
+- Partial and full payments.
+- Supplier account statement.
+- Search and filtering.
+- Supplier-wise reports.
+
+Never count supplier payments as customer receipts.
+
+Never count a supplier payment twice as both a purchase expense and a separate operating expense.
+
+# 12. SALES AND POINT-OF-SALE BILLING
+
+Build a fast and practical sales screen for busy retail environments.
+
+Required features:
+
+- Create a new sale.
+- Select an existing customer or walk-in customer.
+- Search products by name, SKU, or barcode value.
+- Add multiple products.
+- Edit quantity.
+- Edit selling price where permitted.
+- Select measurement units.
+- Apply item-level discounts.
+- Apply invoice-level discounts.
+- Calculate subtotal and final total.
+- Record amount paid.
+- Record outstanding amount.
+- Support cash, UPI, card, bank transfer, and credit as recorded payment categories.
+- Support split payments.
+- Support paid, partially paid, and unpaid invoices.
+- Save invoice history.
+- Preview invoices.
+- Export invoices as PDF.
+- Share invoices using Android sharing.
+- Print invoices where supported.
+- Reprint previous invoices.
+- Search invoices by number, date, or customer.
+- Cancel an invoice through a documented reversal workflow.
+
+Do not mark an invoice as paid simply because it was created.
+
+Do not treat selecting UPI as verification of a real UPI payment. It is only a recorded payment category unless a real payment integration is separately implemented.
+
+Generate unique invoice numbers safely. Protect against duplicate numbering when the app restarts or users repeatedly tap Save.
+
+Use a database transaction when posting a sale so that invoice, invoice items, payment entries, stock movements, and customer balance remain consistent.
+
+Prevent a sale from being posted twice.
+
+# 13. INVOICE GENERATION
+
+Create a professional, printable invoice design.
+
+Include:
+
+- Business name.
+- Business logo, optional.
+- Business contact details, if provided.
+- Invoice number.
+- Invoice date.
+- Customer details, if provided.
+- Item descriptions.
+- SKU, where available.
+- Quantity and unit.
+- Unit price.
+- Discount.
+- Line total.
+- Subtotal.
+- Grand total.
+- Amount paid.
+- Balance due.
+- Payment entries.
+- Notes or terms, optional.
+
+Allow customization of:
+
+- Invoice prefix.
+- Business logo.
+- Footer text.
+- Paper size, where supported.
+- Optional visible fields.
+
+Generate PDFs that display Hindi and English correctly.
+
+Validate that invoice totals match the saved transaction records.
+
+Do not claim GST compliance or tax-compliant invoicing in this initial version. Do not introduce GST calculations until a separately specified and tested tax module has been implemented and reviewed.
+
+# 14. PRODUCT CATALOGUE AND INVENTORY
+
+Create a product catalogue.
+
+Product fields:
+
+- Product ID.
+- Product name.
+- SKU or barcode value.
+- Category.
+- Brand, optional.
+- Cost price.
+- Selling price.
+- Opening stock.
+- Minimum stock threshold.
+- Unit of measurement.
+- Supplier, optional.
+- Description, optional.
+- Active or archived status.
+
+Features:
+
+- Add, edit, view, search, and archive products.
+- Filter by category.
+- Filter low-stock items.
+- View current stock.
+- View stock movement history.
+- View stock valuation using a documented costing method.
+- Export product data.
+- Generate low-stock reports.
+
+Supported units should include:
+
+- Piece.
+- Packet.
+- Box.
+- Kilogram.
+- Gram.
+- Litre.
+- Millilitre.
+- Metre.
+- Foot.
+- Dozen.
+- Custom unit.
+
+Support fractional quantities where appropriate.
+
+Inventory must use a stock-movement ledger as the source of truth.
+
+Record movements for:
+
+- Opening stock.
+- Confirmed purchases.
+- Sales.
+- Customer returns.
+- Supplier returns.
+- Damaged stock.
+- Lost stock.
+- Manual stock adjustments.
+
+Require a reason for manual adjustments.
+
+Do not silently allow negative stock. Provide a setting to warn or block sales that exceed available stock.
+
+Ensure editing an old purchase or invoice does not accidentally apply stock changes twice.
+
+# 15. PURCHASE MANAGEMENT
+
+Implement a purchase module.
+
+Features:
+
+- Create purchase entries.
+- Select supplier.
+- Add multiple products.
+- Enter purchase quantities.
+- Enter unit cost.
+- Apply discounts.
+- Calculate purchase totals.
+- Record amount paid.
+- Record remaining payable.
+- Support partial payments.
+- Store supplier invoice reference.
+- Record purchase date.
+- Update stock when the purchase is posted.
+- Search purchase history.
+- Record purchase returns.
+- Generate purchase reports.
+
+Use database transactions to update the purchase, stock movements, supplier ledger, and payments consistently.
+
+Reopening a purchase must not update inventory again.
+
+Editing or cancelling a posted purchase must follow a defined correction or reversal workflow.
+
+# 16. EXPENSE MANAGEMENT
+
+Create a separate expense management module.
+
+Default categories:
+
+- Shop rent.
+- Electricity.
+- Internet and telephone.
+- Transport.
+- Staff salary.
+- Packaging.
+- Repairs and maintenance.
+- Office supplies.
+- Marketing.
+- Bank charges.
+- Other expenses.
+
+Allow custom categories.
+
+Each expense should support:
+
+- Amount.
+- Category.
+- Date.
+- Payment method.
+- Payee, optional.
+- Notes, optional.
+- Receipt attachment, if implemented.
+- Recurring indicator, optional.
+
+Features:
+
+- Add and edit unposted expenses.
+- Search expenses.
+- Filter by date and category.
+- View daily totals.
+- View monthly totals.
+- View category-wise summaries.
+- Export expenses to CSV and PDF.
+- Identify recurring expenses.
+
+Financial rules:
+
+- Inventory purchases are not automatically operating expenses.
+- Settling a supplier payable must not count as a new expense if the purchase was already recorded.
+- Avoid counting one transaction in multiple expense categories.
+- Preserve a correction history for posted entries.
+
+# 17. CASHBOOK AND PAYMENT ACCOUNTS
+
+Create a cashbook based on recorded financial movements.
+
+Support:
+
+- Opening cash balance.
+- Cash sales.
+- Customer cash receipts.
+- Cash expenses.
+- Supplier cash payments.
+- Other recorded cash inflows and outflows.
+- Daily opening and closing balance.
+- Date-wise cashbook.
+- Cash flow report.
+- Manual reconciliation adjustment with a reason.
+
+If multiple payment accounts are supported, keep cash, bank, and other recorded balances separate.
+
+Do not count credit sales as cash receipts.
+
+Do not count credit purchases as cash payments.
+
+Do not count internal transfers as new income or expenses.
+
+Clearly distinguish the recorded cashbook balance from physical cash actually counted by the shopkeeper.
+
+Use a consistent transaction classification system.
+
+# 18. RETURNS, REFUNDS AND CORRECTIONS
+
+Support:
+
+- Sales returns.
+- Purchase returns.
+- Invoice cancellation.
+- Refund entries.
+- Duplicate-entry correction.
+- Incorrect-payment correction.
+- Stock adjustments.
+- Related transaction references.
+- Correction reason and audit history.
+
+Prevent returns from exceeding eligible quantities or amounts unless a separately documented adjustment process permits them.
+
+A return must update all relevant records consistently:
+
+- Invoice balance.
+- Customer ledger.
+- Payment or refund records.
+- Stock movement.
+- Sales reports.
+- Profit calculations.
+
+Do not erase posted financial history without a trace.
+
+Test every correction flow for consistency.
+
+# 19. REPORTS AND ANALYTICS
+
+Create a dedicated reporting centre.
+
+Reports should include:
+
+- Daily, weekly, and monthly sales.
+- Custom-period sales.
+- Sales by product.
+- Sales by category.
+- Sales by customer.
+- Purchases by supplier.
+- Expense summaries.
+- Category-wise expenses.
+- Customer receivables.
+- Supplier payables.
+- Overdue balances.
+- Invoice payment status.
+- Stock valuation.
+- Stock movement history.
+- Low-stock products.
+- Best-selling products by quantity and revenue.
+- Gross profit estimate.
+- Estimated operating profit.
+- Cashbook report.
+- Customer statements.
+- Supplier statements.
+- Sales returns.
+- Purchase returns.
+- Payment method summary.
+
+Provide date filters, understandable tables, and simple charts where useful.
+
+Allow PDF and CSV exports.
+
+Document each financial formula in the code and relevant user-facing help.
+
+Never report reliable profit if the required cost information is missing or incomplete.
+
+Do not count customer collections as new sales revenue.
+
+# 20. FINANCIAL CALCULATION ENGINE
+
+Create a centralized calculation layer. Do not duplicate accounting formulas across multiple screens.
+
+At minimum, document and implement:
+
+**Net sales revenue** = eligible completed sales minus applicable sales returns and discounts, using the chosen transaction-posting convention.
+
+**Cost of goods sold** = cost assigned to sold inventory using the selected inventory costing method.
+
+**Gross profit** = net sales revenue minus cost of goods sold.
+
+**Estimated operating profit** = gross profit minus eligible operating expenses.
+
+**Customer receivables** = eligible outstanding customer balances.
+
+**Supplier payables** = eligible outstanding supplier balances.
+
+**Recorded cash balance** = opening cash plus recorded cash inflows minus recorded cash outflows, adjusted for documented cash movements.
+
+Specify how the application handles:
+
+- Partial payments.
+- Split payments.
+- Returns.
+- Discounts.
+- Cancellations.
+- Opening balances.
+- Purchase liabilities.
+- Supplier payments.
+- Stock adjustments.
+- Missing product costs.
+- Fractional quantities.
+- Decimal rounding.
+
+Use a documented inventory costing method, such as weighted average, if appropriate for the MVP. Implement it consistently and test it.
+
+Keep sales revenue separate from collections and cash movement.
+
+Keep operating expenses separate from inventory purchases.
+
+Use decimal-safe monetary calculations. Define rounding behavior explicitly.
+
+# 21. SEARCH, FILTERS AND PRODUCTIVITY
+
+Implement useful search and filtering.
+
+Search records by:
+
+- Customer name.
+- Supplier name.
+- Product name.
+- SKU.
+- Invoice number.
+- Transaction reference.
+- Notes, where appropriate.
+
+Filters should support:
+
+- Date range.
+- Amount range.
+- Payment status.
+- Transaction type.
+- Product category.
+- Customer.
+- Supplier.
+- Outstanding balance.
+- Overdue status.
+
+Provide relevant sorting by date, amount, name, and balance.
+
+Use efficient database queries and pagination where needed for larger datasets.
+
+Do not load every transaction into memory if a filtered database query can be used.
+
+# 22. REMINDERS AND NOTIFICATIONS
+
+Provide optional local reminders for:
+
+- Customer payment follow-ups.
+- Supplier payment due dates.
+- Low stock.
+- Pending invoices.
+- Recurring expenses.
+- Daily cashbook closing.
+- Backup reminders.
+
+Allow users to dismiss, reschedule, or disable reminders.
+
+Use an Android-compatible scheduling mechanism and request notification permission only when necessary.
+
+Do not promise exact delivery times when Android battery restrictions may delay notifications.
+
+Do not send SMS or WhatsApp messages automatically.
+
+If sharing a reminder through another application is supported, let the user review and initiate the action.
+
+# 23. BACKUP, RESTORE AND DATA EXPORT
+
+Create a reliable backup and export centre.
+
+Required features:
+
+- Export customers to CSV.
+- Export suppliers to CSV.
+- Export products to CSV.
+- Export transactions to CSV.
+- Export expenses to CSV.
+- Export reports to PDF.
+- Create a complete application backup.
+- Restore from a valid backup.
+- Validate the backup structure and version.
+- Detect corrupt or incompatible files.
+- Preview the data to be restored.
+- Warn before replacing existing data.
+- Use the Android document picker and share functionality.
+- Preserve relationships and record IDs where necessary.
+- Provide clear success and failure messages.
+
+Use an atomic restore process so that a failed restore does not leave the database partially replaced.
+
+Never overwrite user data silently.
+
+Do not upload backups to a remote server by default.
+
+If backup encryption is offered, implement it properly and document the encryption behavior. Never label an ordinary unencrypted file as encrypted.
+
+# 24. PRIVACY AND LOCAL SECURITY
+
+The initial version should store business records locally by default.
+
+Requirements:
+
+- Request only necessary permissions.
+- Do not request contact, SMS, call-log, or location access without a justified implemented feature.
+- Avoid exposing financial information in logs.
+- Validate imported records.
+- Use parameterized database queries.
+- Protect sensitive exported data appropriately.
+- Provide a privacy policy that accurately describes actual behavior.
+- Provide an option to delete local business data after explicit confirmation.
+- Distinguish local data deletion from future server-side account deletion.
+
+Optional access protection may include:
+
+- Local PIN.
+- Biometric unlock when supported.
+- Configurable automatic lock.
+- Change PIN.
+- Securely designed recovery behavior.
+
+Do not claim that PIN or biometric protection automatically encrypts the entire database.
+
+Do not hardcode secrets or passwords.
+
+Do not claim cloud security, end-to-end encryption, or regulatory compliance unless those features are implemented and verified.
+
+# 25. SETTINGS AND CUSTOMIZATION
+
+Create a complete settings screen.
+
+Include:
+
+- Business profile.
+- Hindi or English language.
+- Light, dark, or system theme.
+- Currency display preference, default INR.
+- Date format.
+- Number formatting.
+- Invoice numbering.
+- Default units.
+- Low-stock thresholds.
+- Negative-stock policy.
+- Notification preferences.
+- PIN and biometric settings, if implemented.
+- Backup and restore.
+- CSV and PDF export.
+- Privacy policy.
+- Terms of use.
+- Help and feedback.
+- App version.
+- Clear local data.
+
+Settings must persist after the app restarts.
+
+# 26. MONETIZATION READINESS
+
+Keep the initial offline app useful without payment or an AI API.
+
+Possible future premium features:
+
+- Advanced reports.
+- Additional invoice templates.
+- Custom branding.
+- Advanced inventory analytics.
+- Additional business profiles.
+- Optional cloud backup.
+- Optional multi-device synchronization.
+
+Keep essential accounting records and basic data export available according to the published free-plan terms.
+
+Do not implement fake purchase screens or fake payment success.
+
+If paid digital features are introduced, use the appropriate official Google Play Billing integration and handle purchase verification, cancellation, refunds, subscription expiry, and purchase restoration.
+
+If billing is not implemented, keep it disabled and document what remains.
+
+Do not place disruptive advertisements inside critical sales, ledger, or payment-entry flows.
+
+Do not introduce a paid API dependency for essential offline functionality.
+
+# 27. DATABASE DESIGN
+
+Use Room entities and relationships for the core data model.
+
+Suggested entities:
+
+- BusinessProfile.
+- Customer.
+- Supplier.
+- Product.
+- ProductCategory.
+- StockMovement.
+- SalesInvoice.
+- SalesInvoiceItem.
+- Purchase.
+- PurchaseItem.
+- CustomerTransaction.
+- SupplierTransaction.
+- Payment.
+- Expense.
+- ExpenseCategory.
+- CashbookEntry.
+- SalesReturn.
+- PurchaseReturn.
+- AuditEvent.
+- Reminder.
+- AppPreference.
+
+Define suitable:
+
+- Primary keys.
+- Foreign keys.
+- Indexes.
+- Unique constraints.
+- Nullability rules.
+- Database migrations.
+- Transaction boundaries.
+
+Do not store the same balance independently in several unrelated locations without a clear consistency strategy.
+
+Use one documented source of truth for inventory and financial balances.
+
+Prevent:
+
+- Duplicate invoice numbers.
+- Duplicate payment processing.
+- Invalid negative amounts.
+- Broken relationships.
+- Stock movements without valid reasons.
+- Payments linked to the wrong account.
+- Duplicate stock updates.
+- Invalid return quantities.
+- Accidental deletion of referenced records.
+
+Archive important records where appropriate instead of deleting financial history.
+
+# 28. ACCESSIBILITY AND PERFORMANCE
+
+Ensure:
+
+- Hindi text renders correctly.
+- Contrast is accessible.
+- Screen readers can identify important controls.
+- Buttons have appropriate touch targets.
+- System font scaling is supported.
+- Small and large screens are handled correctly.
+- Color is not the only indicator of transaction status.
+- Forms display useful validation errors.
+- Long lists scroll smoothly.
+- Database operations do not block the main thread.
+- Committed transactions survive app restarts.
+- Database migrations preserve existing user data.
+- Application backgrounding and resuming do not corrupt operations.
+- Errors are handled without exposing sensitive information.
+
+# 29. REQUIRED TESTING
+
+Write automated tests for the accounting and persistence logic before claiming production readiness.
+
+**Customer ledger**
+- Opening balance.
+- Credit sale.
+- Payment received.
+- Partial payment.
+- Full payment.
+- Return.
+- Reversal.
+- Running balance.
+
+**Sales**
+- Single-item invoice.
+- Multiple-item invoice.
+- Fractional quantity.
+- Item discount.
+- Invoice discount.
+- Partial payment.
+- Split payment.
+- Cancellation.
+- Sales return.
+- Duplicate Save prevention.
+
+**Inventory**
+- Opening stock.
+- Purchase stock update exactly once.
+- Sale stock reduction exactly once.
+- Partial return.
+- Purchase return.
+- Manual stock adjustment.
+- Negative-stock policy.
+
+**Expenses and cashbook**
+- Expense totals by date.
+- Category totals.
+- Cash receipts.
+- Cash payments.
+- Internal transfers.
+- Opening and closing balances.
+- Supplier payment without duplicate expense counting.
+
+**Profit and reports**
+- Cost of goods sold.
+- Gross profit.
+- Operating expense deduction.
+- Missing cost data.
+- Discounts and returns.
+- Duplicate-counting prevention.
+
+**Database and app**
+- Persistence after restart.
+- Search and filters.
+- Export validation.
+- Backup validation.
+- Restore behavior.
+- Database migrations.
+- Navigation across required screens.
+- Offline operation.
+
+Run the tests using the available build environment. Report the actual results. If tests cannot be run, state that limitation clearly.
+
+# 30. REQUIRED SCREENS
+
+Implement functional screens for:
+
+1. Splash and onboarding.
+2. Business profile setup.
+3. Dashboard.
+4. Customer list.
+5. Customer details.
+6. Customer ledger.
+7. Add transaction.
+8. Supplier list.
+9. Supplier details.
+10. Supplier ledger.
+11. Product list.
+12. Product details.
+13. Add or edit product.
+14. Stock movement history.
+15. New sale / POS.
+16. Invoice preview.
+17. Invoice history.
+18. Purchase list.
+19. Purchase details.
+20. Expenses.
+21. Cashbook.
+22. Returns and adjustments.
+23. Reports and analytics.
+24. Reminders.
+25. Backup and export.
+26. Settings.
+27. Privacy policy.
+28. PIN or biometric lock, if implemented.
+29. Help and feedback.
+30. About Dukaan Hisab Pro.
+
+Each screen must have working actions, appropriate loading and empty states, validation, error handling, and correct navigation.
+
+# 31. GOOGLE PLAY STORE PREPARATION
+
+Prepare the application for release after implementation and testing.
+
+Verify:
+
+- Application ID and package name.
+- App name and version information.
+- Version code increment.
+- App icon and required store graphics.
+- Signed Android App Bundle (AAB).
+- Release build configuration.
+- No debug-only features in production.
+- No test data in production mode.
+- Correct permissions.
+- Privacy policy URL.
+- Data safety declarations based on actual behavior.
+- Store listing description.
+- Screenshots.
+- Content rating and other applicable Play Console declarations.
+- Testing-track requirements applicable at the time of submission.
+- App startup and core workflows on a physical Android device.
+- Backup and restore behavior.
+- Financial calculation correctness.
+- Offline behavior.
+
+Do not claim that the app is Play Store compliant until the applicable checks have been completed.
+
+Do not claim to have uploaded or published the app unless that action has actually occurred.
+
+# 32. IMPLEMENTATION PHASES
+
+Develop the application in these phases.
+
+**Phase 1 — Foundation**
+- Verify the environment.
+- Set up the project.
+- Establish the design system.
+- Implement navigation.
+- Create Room database foundations.
+- Implement onboarding and business profile.
+- Implement language and theme preferences.
+
+**Phase 2 — Core accounting**
+- Implement customers.
+- Implement customer ledger.
+- Implement payments.
+- Implement financial calculation functions.
+- Add automated accounting tests.
+- Verify persistence after restart.
+
+**Phase 3 — Products and sales**
+- Implement product catalogue.
+- Implement inventory movements.
+- Implement POS sales.
+- Implement invoice numbering.
+- Implement invoice preview and PDF export.
+- Test stock and payment consistency.
+
+**Phase 4 — Purchases and suppliers**
+- Implement supplier management.
+- Implement supplier ledger.
+- Implement purchases.
+- Implement partial supplier payments.
+- Implement purchase returns.
+- Test inventory and payable consistency.
+
+**Phase 5 — Expenses and cashbook**
+- Implement expense categories.
+- Implement expense records.
+- Implement cashbook.
+- Implement recorded payment accounts, if supported.
+- Test cash balances and duplicate-counting prevention.
+
+**Phase 6 — Reports and exports**
+- Implement sales reports.
+- Implement receivables and payables.
+- Implement stock reports.
+- Implement profit estimates.
+- Implement CSV exports.
+- Implement complete backup and restore.
+
+**Phase 7 — Reliability and security**
+- Add correction workflows and audit history.
+- Validate data imports.
+- Test migrations.
+- Add optional app lock.
+- Review permissions and privacy.
+- Resolve crashes and important defects.
+
+**Phase 8 — Release preparation**
+- Build release version.
+- Run all available tests.
+- Test on a physical Android device.
+- Generate a signed AAB.
+- Prepare Play Console materials.
+- Document limitations and unfinished features.
+
+Do not skip phases simply to produce more screens quickly.
+
+# 33. DEVELOPMENT WORKFLOW FOR GOOGLE AI STUDIO
+
+At the beginning of each development session:
+
+1. Read the current project files.
+2. Identify the implemented features.
+3. Identify incomplete or broken features.
+4. Review relevant database entities and existing architecture.
+5. Select one development phase or narrowly defined task.
+6. Implement that task without replacing unrelated working code.
+7. Review compile errors and runtime issues.
+8. Run relevant tests when the environment supports them.
+9. Summarize the changes and actual verification results.
+10. Identify the exact next task.
+
+When modifying a file, preserve unrelated existing functionality.
+
+When adding a database field, consider migrations and existing records.
+
+When adding a new screen, connect it to navigation and real repository data.
+
+When adding a financial feature, implement the calculation and its tests before connecting the UI.
+
+When a feature cannot be implemented in the current environment, explain why and provide the next practical step.
+
+# 34. FINAL DELIVERY REQUIREMENTS
+
+The completed project should include:
+
+- Android project source code.
+- Build configuration.
+- Dependency list.
+- Functional Jetpack Compose screens.
+- Room entities, DAOs, repositories, and migrations.
+- Customer and supplier ledgers.
+- Sales and purchase modules.
+- Inventory movement tracking.
+- Expense and cashbook modules.
+- Reports and exports.
+- Backup and restore.
+- Automated tests.
+- Setup and build instructions.
+- Physical-device testing instructions.
+- Signed AAB generation instructions.
+- Play Console preparation checklist.
+- Privacy policy and Data safety preparation checklist.
+- Known limitations.
+- A list of features that remain incomplete or unverified.
+
+Provide a truthful feature status report using:
+
+- IMPLEMENTED AND VERIFIED
+- IMPLEMENTED BUT NOT FULLY VERIFIED
+- NOT IMPLEMENTED
+
+Do not mark a feature as verified merely because its screen exists.
+
+# FINAL INSTRUCTION
+
+Begin by inspecting the current Google AI Studio environment and the existing project. Confirm the supported Android build and export workflow.
+
+Then implement **Phase 1: Foundation**, followed by **Phase 2: Customer Management, Customer Ledger, Payments, and Financial Calculation Tests**.
+
+Keep the application usable after every phase.
+
+Prioritize financial correctness, data integrity, offline reliability, privacy, and maintainability over the number of features generated in one response.
+
+Do not replace the entire project when adding modules.
+
+Do not invent successful build results or tests.
+
+Do not declare the application production-ready until the relevant code, calculations, tests, privacy review, and release checks have been completed.
+
+**Start with the first working MVP and provide the implementation plan, project structure, files created or modified, actual test results, known limitations, and next steps.**

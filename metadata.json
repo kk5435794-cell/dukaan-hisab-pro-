@@ -1,0 +1,6 @@
+{
+  "name": "Dukaan Hisab Pro",
+  "description": "Offline-first retail management, billing, udhaar ledger, and accounting app for shopkeepers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
